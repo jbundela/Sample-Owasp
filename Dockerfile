@@ -1,11 +1,12 @@
-FROM node:8
+# syntax=docker/dockerfile:1
 
-WORKDIR /usr/src/app
+FROM python:3.8-slim-buster
 
-COPY package*.json ./
-RUN npm ci --only=production
+WORKDIR /.
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD ["sample1.py"]
