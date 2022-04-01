@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.8-slim-buster
+FROM python:3.8
 
 WORKDIR /.
 
@@ -11,4 +11,4 @@ ADD Sample1.py
 
 COPY . .
 
-CMD ["sample1.py"]
+CMD [ "python", "./sample1.py"]
