@@ -1,0 +1,52 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
+        tags: |
+          $(tag)
+        
+- stage: OwaspCheck
+  displayName: Owasp Dependency Check
+  jobs:
+  - job: Run
+    displayName: Run Python File
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: PythonScript@0
+        displayName: 'Install tools'
+        inputs:
+          script: python -m pip install --upgrade pip 
+  
+      - task: PythonScript@0
+        displayName: Running Python Script - Sample1
+        inputs:
+          script: '**/sample1.py'
+      
+      - task: Bash@3
+        inputs:
+          script: '**/owasp-dependency-check.sh'
+
